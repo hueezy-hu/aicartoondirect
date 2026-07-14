@@ -1,0 +1,94 @@
+---
+name: directing-ai-animation
+description: Use when a user wants to analyze an AI animation video or screenshot, rewrite or create a voiceover for high-frequency visual changes, storyboard a 30–75 second animated short, or generate keyframe image prompts and multi-frame video prompts.
+---
+
+# AI动画导演
+
+## 核心原则
+
+把高频镜头变化放在首位。先建立论证与视觉语义，再设计镜头，最后编译Prompt。不要用字幕换词代替画面变化。
+
+默认目标市场语言为英语；分析、镜头表、图片Prompt和视频Prompt使用中文。对白、口型和画面文字使用目标市场语言。
+
+## 路由输入
+
+### 视频＋口播稿
+
+1. 用下面的命令提取证据：
+
+   ```bash
+   bash scripts/extract-video-evidence.sh '<视频路径>' '<临时输出目录>'
+   ```
+
+2. 对齐口播语义单元与画面状态；场景检测只作候选，继续识别动作、景别、构图、道具、特效、尺度和空间变化。
+3. 阅读 `references/script-engine.md` 与 `references/visual-engine.md`。
+
+### 截图＋口播稿
+
+1. 阅读 `references/prompt-templates.md` 的视觉指纹字段。
+2. 锁定媒介、角色、写实程度、材质、灯光、色彩、背景、镜头、构图和特效。
+3. 阅读脚本与镜头引擎，生成新方案。
+
+### 主题或产品信息
+
+1. 阅读 `references/script-engine.md`，从零建立最终口播。
+2. 未指定时长时自动选择30–75秒。
+3. 未提供风格时读取 `references/pattern-library.md` 的默认3D风格。
+
+### 显式学习
+
+只有用户明确说“学习这个风格”“加入Skill”或同义指令时，才更新 `references/pattern-library.md`。普通分析不得自动写入模式库。
+
+## 两阶段交付
+
+### 第一阶段：内容与导演方案
+
+直接生成，不停在纯评价：
+
+1. 中文论证逻辑；
+2. 影响说服力、视觉化或节奏的结构问题；
+3. 最终版目标语言口播；
+4. 带时间轴口播；
+5. 纯净配音稿；
+6. 中文高频镜头表；
+7. 每个10秒段的关键帧数量及理由。
+
+默认在此停下，等待用户确认。用户明确要求一次完成时继续第二阶段。
+
+### 第二阶段：生成Prompt
+
+阅读 `references/prompt-templates.md`，依次输出：
+
+1. 全局风格母版、角色身份母版和负面约束母版；
+2. 每10秒4–7张关键帧的完整中文图片Prompt；
+3. 每10秒一条完整中文视频Prompt；
+4. 动作、物体、动画特效、状态变化和转场音效；
+5. 跨段桥接说明。
+
+固定按10秒生成段拆分，尾段可短于10秒。上一段末帧原则上复用为下一段首帧；强硬切时改用相同角色与风格母版。
+
+## 高频变化门槛
+
+使用 `references/visual-engine.md` 的七通道和完整拆解字段：
+
+- 每0.4–0.8秒至少一次微变化；
+- 每1.5–3秒至少一次中变化；
+- 前10秒每4–7秒至少一次强变化；
+- 长视频每6–12秒迁移视觉空间或完成同等级重置；
+- 每个时间段只设一个主动作；
+- 强变化后保留0.3–0.7秒识别窗口。
+
+关键帧默认每10秒5张，允许4–7张。按不可连续生成的视觉状态决定，不平均分配。
+
+## Prompt硬规则
+
+- 让Prompt自包含；不要写“复刻参考视频”或依赖模型看不到的素材。
+- 图片Prompt重复必要的一致性约束；极端微距仍继承同一角色、媒介、材质与灯光。
+- 视频Prompt只引用实际上传的关键帧，写清时间轴、动作、镜头、道具、特效、转场、声音与禁止事项。
+- 默认不生成背景音乐或旁白；脚本有角色对话时才生成目标语言对白。
+- 声音必须包含动画特效和转场反馈，不只写现实动作拟音；只标关键节点，避免过载。
+
+## 模式与验证
+
+需要镜头参考时读取 `references/pattern-library.md`。修改核心规则或模式库前后读取 `references/evaluation-cases.md`，逐项防止已知回归。
