@@ -9,6 +9,8 @@ description: Use when a user wants to analyze an AI animation video or screensho
 
 把高频镜头变化放在首位。先建立论证与视觉语义，再设计镜头，最后编译Prompt。不要用字幕换词代替画面变化。
 
+坚持“内容先建立信任，营销只放在最后一个Part”。前段用人物代入、问题可视化和知识解释吸引观众。产品可以被动存在或被自然使用，但不提前使用产品英雄镜头、品牌强调、利益点堆叠或行动号召。
+
 默认目标市场语言为英语；分析、镜头表、图片Prompt和视频Prompt使用中文。对白、口型和画面文字使用目标市场语言。
 
 ## 路由输入
@@ -22,7 +24,7 @@ description: Use when a user wants to analyze an AI animation video or screensho
    ```
 
 2. 对齐口播语义单元与画面状态；场景检测只作候选，继续识别动作、景别、构图、道具、特效、尺度和空间变化。
-3. 阅读 `references/script-engine.md` 与 `references/visual-engine.md`。
+3. 阅读 `references/script-engine.md`、`references/visual-engine.md` 与 `references/marketing-engine.md`。
 
 ### 截图＋口播稿
 
@@ -32,7 +34,7 @@ description: Use when a user wants to analyze an AI animation video or screensho
 
 ### 主题或产品信息
 
-1. 阅读 `references/script-engine.md`，从零建立最终口播。
+1. 阅读 `references/script-engine.md` 与 `references/marketing-engine.md`，从零建立最终口播。
 2. 未指定时长时自动选择30–75秒。
 3. 未提供风格时读取 `references/pattern-library.md` 的默认3D风格。
 
@@ -46,13 +48,15 @@ description: Use when a user wants to analyze an AI animation video or screensho
 
 直接生成，不停在纯评价：
 
-1. 中文论证逻辑；
-2. 影响说服力、视觉化或节奏的结构问题；
-3. 最终版目标语言口播；
-4. 带时间轴口播；
-5. 纯净配音稿；
-6. 中文高频镜头表；
-7. 每个10秒段的关键帧数量及理由。
+1. 所选内容叙事骨架与中文论证逻辑；
+2. 只供导演使用的人物策略卡；
+3. 内容Part与最后“认知植入与解决方案Part”的时间边界；
+4. 影响说服力、视觉化或节奏的结构问题；
+5. 最终版目标语言口播；
+6. 带时间轴口播；
+7. 纯净配音稿；
+8. 含场景任务、对比轴和心理作用的中文高频镜头表；
+9. 每个10秒段的关键帧数量及理由。
 
 默认在此停下，等待用户确认。用户明确要求一次完成时继续第二阶段。
 
@@ -60,8 +64,8 @@ description: Use when a user wants to analyze an AI animation video or screensho
 
 阅读 `references/prompt-templates.md`，依次输出：
 
-1. 全局风格母版、角色身份母版和负面约束母版；
-2. 每10秒4–7张关键帧的完整中文图片Prompt；
+1. 全局风格母版、人物视觉母版、主体参考图Prompt、场景参考图Prompt和负面约束；
+2. 每10秒4–7张关键帧的简洁中文图片Prompt；
 3. 每10秒一条完整中文视频Prompt；
 4. 动作、物体、动画特效、状态变化和转场音效；
 5. 跨段桥接说明。
@@ -81,6 +85,18 @@ description: Use when a user wants to analyze an AI animation video or screensho
 
 关键帧默认每10秒5张，允许4–7张。按不可连续生成的视觉状态决定，不平均分配。
 
+## 内容与营销边界
+
+读取 `references/marketing-engine.md`。默认把前75%–85%作为内容Part，把最后15%–25%作为唯一允许营销性强调的“认知植入与解决方案Part”：
+
+- 内容Part负责人物代入、问题、原因、失败尝试、认知反转和解决标准；
+- 前段允许产品被动存在或被自然使用，但不得成为主视觉，不强调品牌与利益点；
+- 最后Part才把产品与前文建立的正确解决方案明确绑定；
+- 人物在前段是观众替身，在中段是理解问题的人，在最后是结果示范者，不变成推销员；
+- 默认只做认知植入与解决方案关联，不写购买CTA；用户明确要求转化时才增加一句软行动；
+- 默认结果优先，产品英雄镜头为可选，不作为固定结尾。
+- 没有产品或商业目标时，不强行营销；最后Part改为内容结论或自然下一步，营销强度保持0–1。
+
 ## Prompt硬规则
 
 - 让Prompt自包含；不要写“复刻参考视频”或依赖模型看不到的素材。
@@ -88,7 +104,12 @@ description: Use when a user wants to analyze an AI animation video or screensho
 - 视频Prompt只引用实际上传的关键帧，写清时间轴、动作、镜头、道具、特效、转场、声音与禁止事项。
 - 默认不生成背景音乐或旁白；脚本有角色对话时才生成目标语言对白。
 - 声音必须包含动画特效和转场反馈，不只写现实动作拟音；只标关键节点，避免过载。
+- 导演镜头表保留时间轴；最终Seedance视频Prompt不写每镜时间戳，使用“镜头01、镜头02……”组织。
+- 先生成角色参考图并建立 `@主体`；再生成一张包含主角的场景参考图，用它锁定人物与环境比例。
+- 不上传拼接式分镜故事板；多帧功能只上传独立关键帧或主体、场景参考图。
+- 最终Prompt只保留AI可执行的主体、动作、场景、景别、构图、转场和音效，不写人物策略、心理标签、场景说服任务或营销强度。
+- 已上传主体和场景参考后，不在每个Prompt重复完整外观与风格长描述。
 
 ## 模式与验证
 
-需要镜头参考时读取 `references/pattern-library.md`。修改核心规则或模式库前后读取 `references/evaluation-cases.md`，逐项防止已知回归。
+需要镜头参考时读取 `references/pattern-library.md`。修改核心规则、营销边界或模式库前后读取 `references/evaluation-cases.md`，逐项防止已知回归。
